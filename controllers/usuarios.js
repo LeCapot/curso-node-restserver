@@ -10,6 +10,7 @@ const usuariosGet = async (req, res = response) => {
     //const { q, nombre = "no name", apikey, page = 1, limit} = req.query;
     const { limite = 5 ,desde = 0} = req.query;
     
+    
     const query = {estado: true,
                     }
 /*
@@ -26,7 +27,7 @@ const usuariosGet = async (req, res = response) => {
             .skip( Number(desde) )
             .limit( Number(limite) )
     ]);
-
+    
     res.json({
     /*    msg: 'get API - controlador',
         q, 
@@ -85,8 +86,9 @@ const usuariosPost =  async (req,res = response) => {
     // Encriptar la contraseña
     const salt = bcryptjs.genSaltSync();
     usuario.password = bcryptjs.hashSync( password, salt );
-
-
+    // console.log(salt);
+    // console.log(password);
+    // console.log(bcryptjs.compareSync(password, usuario.password));
 
     // Guardar en DB
    await usuario.save();
@@ -103,17 +105,20 @@ const usuariosDelete = async (req,res) => {
     
     const{ id } = req.body;
 
+    const  uid = req.uid;
+    const usuarioAutenticado = req.usuario;
     // Fisicamente lo borramos
     //const usuario = await Usuario.findByIdAndDelete( id );
     
     // baja logica
-    const usuario = await Usuario.findByIdAndUpdate( id, { estado: false });
-
+    const usuariodelete = await Usuario.findByIdAndUpdate( id, { estado: false });
+    
     res.json({
         
         id,
-        usuario
-
+        usuariodelete,
+        uid,
+        usuarioAutenticado
 
     });
 };
